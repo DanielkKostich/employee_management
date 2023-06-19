@@ -1,5 +1,6 @@
 const inquirer = require("inquirer");
 const db = require("./db");
+const prompt = inquirer.createPromptModule();
 
 
 
@@ -80,10 +81,12 @@ function loadPrompts() {
       case "ADD_ROLE":
         addRole();
         break;
-      default:
-        quit();
+       default:
+         quit();
     }
-  });
+}).catch(err => {
+  console.error(err); // Log any errors
+});
 }
 
 function viewEmployees() {
@@ -104,18 +107,17 @@ function removeEmployee() {
         name: `${first_name} ${last_name}`,
         value: id
       }));
-
       prompt([
         {
           type: "list",
           name: "employeeId",
           message: "Which employee do you want to remove?",
-          choices: employeeChoices
+          choices: employeeChoices, 
         }
       ])
         .then(res => db.removeEmployee(res.employeeId))
         .then(() => console.log("Removed employee from the database"))
-        .then(() => loadMainPrompts())
+        .then(() => loadPrompts())
     })
 }
 
@@ -212,7 +214,7 @@ function viewDepartments() {
       console.log("\n");
       console.table(departments);
     })
-    .then(() => loadMainPrompts());
+    .then(() => loadPrompts());
 }
 
 
